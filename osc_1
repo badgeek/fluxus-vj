@@ -1,0 +1,50 @@
+(osc-source "9000")
+
+(desiredfps 30)
+
+(require scheme/class)
+
+(clear)
+
+(define ribbon%
+    (class object%
+        (define t 0)
+        
+        (define (make-text text)
+            (set! t (build-type "Bitstream-Vera-Sans-Mono.ttf" text))
+            )
+        
+        (define/public (destruct text)
+            (cond 
+                [(not (zero? t)) (destroy t)]
+                )
+            (make-text (number->string text))
+            )
+        (super-new)
+        ))
+
+(define ribbons (make-object ribbon%))
+
+(define kaos 0)
+
+(define kaosy 0)
+
+
+(every-frame
+    (with-state
+        (when (osc-msg "/preset2/Vslider/0")
+            (set! kaos (/ (osc 0) 1))   
+            ;(set! kaosy (/ (osc 1) 1))   
+            )
+        
+        (when (osc-msg "/preset2/Vslider/1")
+            ;(set! kaos (/ (osc 0) 1))   
+            (set! kaosy (/ (osc 0) 1))   
+            )
+        (translate (vector (/ kaosy 30) (/ kaos 30) 0))
+        (send ribbons destruct kaos)
+        
+        
+        (draw-cube)
+        )
+    )

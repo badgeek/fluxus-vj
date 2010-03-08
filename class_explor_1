@@ -1,0 +1,39 @@
+(clear)
+
+
+(define ribbon%
+    (class object%
+
+        (init myancestor_)
+        (define myancestor myancestor_)
+        (define/public (test)
+            ;(display "ok")
+            (display (send myancestor getmyval))
+        )        
+        (super-new)))
+
+(define master%
+    (class object%
+        
+        (define myvalue 10000)
+        (define objtest (make-object ribbon% this))
+
+
+        (define/public (test)
+            (send objtest test)
+        )  
+
+  
+        (define/public (getmyval)
+            myvalue
+        )        
+
+        
+
+        (super-new)))
+
+
+
+(define x (make-object master%))
+
+(display (send x getmyval))

@@ -1,0 +1,28 @@
+(require scheme/class)
+
+(clear)
+
+(define ribbon%
+    (class object%
+    (define t 0)
+
+        (define (make-text text)
+            (set! t (build-type "Bitstream-Vera-Sans-Mono.ttf" text))
+        )
+
+        (define/public (destruct text)
+            (cond 
+                  [(not (zero? t)) (destroy t)]
+            )
+            (make-text text)
+        )
+    (super-new)
+))
+
+(define ribbons (make-object ribbon%))
+
+;(send ribbons update)
+
+(every-frame
+(send ribbons destruct (number->string (time)))
+)

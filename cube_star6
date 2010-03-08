@@ -1,0 +1,66 @@
+(clear)
+
+(start-audio "iTunes:out1" 512 44100)
+
+
+(hint-ignore-depth)
+(hint-depth-sort)
+
+(define x (build-particles 100))
+(reset-camera)
+(hint-anti-alias)
+;(hint-none)
+;(hint-wire)
+;(backfacecull 0)
+
+(wire-colour (vector 1 0 0))
+;(ortho)
+
+(blend-mode 'one 'dst-color)
+
+(with-primitive x
+    (hide 1)
+    (pdata-map!
+        (lambda (x)
+            (vmul (grndvec) 30)
+        )
+        "p"
+    )
+    (pdata-add "vel" "v")
+    (pdata-map!
+        (lambda (x)
+            (vector 0.1 0.1 0)
+        )
+        "vel"
+    )
+)
+
+(every-frame
+    (with-primitive x
+    (pdata-index-map!
+        (lambda (idx x)
+            (with-state
+                 ;(ortho)
+                 (rotate (vector (* (sin (time)) 10) 0 (* (cos (time)) 10)))
+                 (translate x)
+                 (translate (vector (* (sin (time)) 10) 0 (* (sin (time)) 10)))
+                 (opacity 0.1);
+                 (colour (vector 0.7 (gh idx) (gh (+ 3 idx))))
+                ;(colour (vector 0 (gh (fmod idx 3)) (gh (fmod idx 5))))    
+                 (scale (vector (gh (fmod idx 5)) (gh (fmod idx 5)) (gh (fmod idx 5))))
+                 
+                 (cond [(not (zero? (fmod idx 2))) (texture (load-texture "invaders/invader10.png"))]
+                       [else (texture (load-texture "smoke.png"))]
+                 )
+                  
+                 
+
+                 (draw-plane)
+            )
+            x
+            ;(vadd x (vector (flxrnd) (flxrnd) (flxrnd)))
+        )
+    "p"
+    )
+    )
+)

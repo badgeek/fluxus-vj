@@ -1,0 +1,17 @@
+(require scheme/class)
+
+(clear)
+
+(define ribbon%
+    (class object%
+        (define/public (update)
+            (display "oke")
+        )
+(super-new)
+
+    )
+)
+
+(define ribbons (make-object ribbon%))
+
+(send ribbons update)

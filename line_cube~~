@@ -1,0 +1,41 @@
+(clear)
+(start-audio "iTunes:out1" 512 44100)
+
+(define x (build-ribbon 100))
+
+(with-primitive x
+
+    (pdata-map!
+
+        (lambda (x)
+            (vmul (grndvec) 10)
+        )
+        "p"
+    )
+
+    (hint-wire)
+    (line-width 2)
+    (pdata-copy "p" "pos")
+    (pdata-copy "n" "nor")
+
+    (display (pdata-size))
+)
+
+
+(every-frame
+
+(with-primitive x
+(pdata-index-map!
+    (lambda (idx x)
+        (with-state
+         (hint-none)
+         (hint-wire)
+         (translate x)
+         (draw-cube)
+        )
+        (vadd (pdata-ref "pos" idx) (vector 0 (gh (fmod idx 4)) 0))
+    )
+    "p"
+)
+)
+)

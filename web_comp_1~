@@ -1,0 +1,113 @@
+(clear)
+(start-audio "system:capture_1" 512 44100)
+(clear-colour (vector 0 0 0))
+(hint-unlit)
+(hint-ignore-depth)
+(hint-depth-sort)
+(hint-anti-alias)
+
+(blend-mode 'one 'dst-alpha)
+
+(define x (build-ribbon 100))
+(define y (build-particles 100))
+;(clear-colour (vector 0.5 0.5 0.5))
+(wire-colour (vector 1 0 0))
+
+
+(with-primitive x
+    (hint-unlit)
+    (wire-colour (vector 0.1 0 0))
+    
+    (pdata-map!
+        
+        (lambda (x)
+            (vmul (grndvec) 50)
+            )
+        "p"
+        )
+
+    (pdata-map!
+        
+        (lambda (x)
+            1
+            )
+        "w"
+        )
+
+    
+    ;(hint-wire)
+    (line-width 2)
+    (pdata-copy "p" "pos")
+(colour (vector 0 1 0)) 
+  (texture (load-texture "smoke.png")) 
+   
+   )
+
+(with-primitive y
+
+
+(blend-mode 'src-alpha 'dst-alpha)
+
+    ;(colour (vector 1 1 1))
+    ;(hint-none)
+    ;(hint-wire)
+    ;(line-width 2)
+    ;(line-colour (vector 1 0 0))
+    (colour (vector 0 1 0))  
+    (texture (load-texture "cpu.png")) 
+    (pdata-map!
+        (lambda (x)
+            10
+            )
+        "s"
+        )
+    
+    
+    
+
+    (pdata-map!
+        (lambda (x)
+            (vector 0 1 0)  
+            )
+        "c"
+        )
+    
+    )
+
+
+(every-frame
+    
+    (with-state
+        (rotate (vector (* (time) 100) 0 0))
+        (with-primitive x
+            ;(rotate (vector 1 0 0))
+            ;(ortho)
+            
+            (pdata-index-map!
+                (lambda (idx x)
+                    (with-primitive y
+                        (pdata-set! "s" idx (/ (gh idx) 2))
+                        (pdata-set! "p" idx x)
+                        )
+                    x
+                    )
+                "p"
+                )
+        (pdata-index-map!
+        (lambda (idx x)
+           (/ (gh idx) 10)  
+            )
+        "w"
+        )
+
+        (pdata-index-map!
+        (lambda (idx x)
+           (vadd (pdata-ref "pos" idx) (vmul (pdata-ref "pos" idx) (/ (gh idx) 100)))  
+            )
+        "p"
+        )    
+
+            )
+        )
+    
+    )

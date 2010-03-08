@@ -1,0 +1,42 @@
+(clear)
+(define x (with-state 
+        (hint-unlit)
+        (build-ribbon 10)
+        ))
+
+(with-primitive x
+    
+    (texture (load-texture "smoke.png"))
+    (colour (vector 0 1 0))
+    (pdata-op "+" "w" 1)
+    
+    (pdata-index-map!
+        (lambda (idx x)
+            (vector 0 (* idx 4) 0) 
+            )
+        "p"
+        )
+    (pdata-copy "p" "pos")
+    )
+
+(define (render)
+    (with-primitive x
+        (pdata-index-map!
+            (lambda (idx x)
+                ;(display x)
+                ;(newline)
+                
+                
+                (cond [(not (zero? (modulo (+ idx 1) 2))) (vadd (pdata-ref "pos" idx) (vector (* (sin (+ (time) idx)) 0.4) 0 0))]
+                    [else (vadd (pdata-ref "pos" idx) (vector (* (sin (+ (time) idx)) 0.8) 0 0))])
+                
+                
+                ;x
+                )
+            "p"
+            )
+        )
+    )
+
+;(render)
+(every-frame (render))

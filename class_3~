@@ -1,0 +1,34 @@
+(require scheme/class)
+
+(clear)
+
+(define ribbon%
+    (class object%
+    (define t 0)
+
+        (define (make-text text)
+            (set! t (build-type "Bitstream-Vera-Sans-Mono.ttf" text))
+        )
+
+        (define/public (destruct text)
+            (cond 
+                  [(not (zero? t)) (destroy t)]
+            )
+            (make-text text)
+        )
+    (super-new)
+))
+
+(define ribbons (build-list 10 (lambda(x) (make-object ribbon%))))
+
+(every-frame
+(for-each
+    (lambda (x)
+        (send x destruct "jembut mawut")
+        (translate (vector 0 10 0))
+    )
+    ribbons
+)
+)
+
+;(send ribbons update)

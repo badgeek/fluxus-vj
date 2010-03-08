@@ -1,0 +1,39 @@
+(clear)
+(start-audio "system:capture_1" 512 44100)
+(hint-anti-alias)
+(line-width 1)
+(define x (build-nurbs-sphere 30 10))
+
+(with-primitive x
+    (scale (vector 1 1 1))
+    (pdata-add "ori" "v")
+    (pdata-copy "p" "ori")
+)
+
+(define (vertex_1 y)
+    (with-primitive x
+      ;(hint-none)
+      (hint-wire)
+      (backfacecull 1)
+      (opacity (* (gh 5) 1f0))
+      ;(wire-line 1)
+      (wire-opacity (* (gh 3) 10))
+      (wire-colour (vector 0.6 0 0))
+      (colour (vector (* (gh 4) 100) (* (gh 3) 100) 0))
+      (rotate (vector 0 (* (delta) y) 0))
+  ;    (scale (vector (gh 2) (gh 3) (gh 4)))
+      (pdata-index-map!
+           (lambda (index val)
+                (vadd (pdata-ref "ori" index) (vmul (pdata-ref "n" index) (tan (* (gh index) 100))))
+           )
+        "p"
+      )
+
+    )
+)
+
+(define (renderchain)
+    (vertex_1 50)
+)
+
+(every-frame (renderchain))
